@@ -5,7 +5,7 @@ $Time = Get-Date -Format "MM-dd-yyyy-HHmmss" ### Getting the date and formatting
 $Transcript_File = $PSScriptRoot + "\Transcripts\Media_Sync_$Time.txt" ### Location for the transcript file
 ### Zeroing out the count variables to ensure the numbers are accurate every time
 $Copied_Count = 0
-$Moved_Count = 0 
+$Moved_Count = 0
 $Duplicate_Count = 0
 $Skipped_Count = 0
 $Created_Dir_Count = 0
@@ -71,13 +71,13 @@ Function Get-FileMetaData ($folder) {
                 $DateTime = [DateTime]::ParseExact($temp_date, "M/d/yyyy h:mm tt", [System.Globalization.DateTimeFormatInfo]::InvariantInfo, [System.Globalization.DateTimeStyles]::None) ### Converts to proper datetime
                 $DateFormated = $DateTime.ToString('ddMMMyyyy_HHmm') ### Sets the format for the file name (ie 01Jun2003_1134)
                 ### Putting together the destination folder structure, using the 4 digit year and 3 digit month name (ie ..\2019\Oct)
-                $Directory = $DestinationDir + "\" + $DateTime.ToString('yyyy') + "\" + $DateTime.ToString('MMM')
+                $Directory = $DestinationDir + "\" + $DateTime.ToString('yyyy') + "\" + $DateTime.ToString('MM')
             }
             else {
                 ### if the more accurate date taken field is blank then the script will use the Modify date instead
                 $DateFormated = $File.ModifyDate.ToString('ddMMMyyyy_HHmm')
                 ### Putting together the destination folder structure, using the 4 digit year and 3 digit month name (ie ..\2019\Oct)
-                $Directory = $DestinationDir + "\" + $File.ModifyDate.ToString('yyyy') + "\" + $File.ModifyDate.ToString('MMM')
+                $Directory = $DestinationDir + "\" + $File.ModifyDate.ToString('yyyy') + "\" + $File.ModifyDate.ToString('MM')
             }
             ### Updating custom PS object to hold file facts
             $customobj += [PSCustomObject] @{
@@ -86,7 +86,7 @@ Function Get-FileMetaData ($folder) {
                 Extension            = $($FolderCOM.getDetailsOf($File, 164))
                 Source_Path          = $File.Path
             }
-            ### Clearing variables to keep the script clean  
+            ### Clearing variables to keep the script clean
             Clear-Variable FileSize_String, Last5_FileSize, temp_date, DateTime, DateFormated, Directory -ErrorAction SilentlyContinue
         }
         #########################################################################################
@@ -101,13 +101,13 @@ Function Get-FileMetaData ($folder) {
                 $DateTime = [DateTime]::ParseExact($temp_date, "M/d/yyyy h:mm tt", [System.Globalization.DateTimeFormatInfo]::InvariantInfo, [System.Globalization.DateTimeStyles]::None) ### Converts to proper datetime
                 $DateFormated = $DateTime.ToString('ddMMMyyyy_HHmm') ### Sets the format for the file name (ie 01Jun2003_1134)
                 ### Putting together the destination folder structure, using the 4 digit year and 3 digit month name (ie ..\2019\Oct)
-                $Directory = $DestinationDir + "\" + $DateTime.ToString('yyyy') + "\" + $DateTime.ToString('MMM')
+                $Directory = $DestinationDir + "\" + $DateTime.ToString('yyyy') + "\" + $DateTime.ToString('MM')
             }
             else {
                 ### if the more accurate media created field is blank then the script will use the Modify date instead
                 $DateFormated = $File.ModifyDate.ToString('ddMMMyyyy_HHmm')
                 ### Putting together the destination folder structure, using the 4 digit year and 3 digit month name (ie ..\2019\Oct)
-                $Directory = $DestinationDir + "\" + $File.ModifyDate.ToString('yyyy') + "\" + $File.ModifyDate.ToString('MMM')
+                $Directory = $DestinationDir + "\" + $File.ModifyDate.ToString('yyyy') + "\" + $File.ModifyDate.ToString('MM')
             }
             ### Updating custom PS object to hold file facts
             $customobj += [PSCustomObject] @{
@@ -116,7 +116,7 @@ Function Get-FileMetaData ($folder) {
                 Extension            = $($FolderCOM.getDetailsOf($File, 164))
                 Source_Path          = $File.Path
             }
-            ### Clearing variables to keep the script clean  
+            ### Clearing variables to keep the script clean
             Clear-Variable FileSize_String, Last5_FileSize, temp_date, DateTime, DateFormated, Directory -ErrorAction SilentlyContinue
         }
         #########################################################################################
@@ -144,11 +144,11 @@ Function Get-FileMetaData ($folder) {
                 Destination = "N/A"
                 Results     = "Not a photo or video, skipped"
             }
-            ### Clearing variables to keep the script clean  
+            ### Clearing variables to keep the script clean
             Clear-Variable Typeofitem -ErrorAction SilentlyContinue
         }
         #########################################################################################
-    } 
+    }
     #########################################################################################
     ### Sending the results to the terminal and transcript for each folder processed
     Write-host "Photos detected: $Photos_Detected" -ForegroundColor Cyan
@@ -157,7 +157,7 @@ Function Get-FileMetaData ($folder) {
     Write-host "Other files detected: $Others_Detected" -ForegroundColor Cyan
     ### Returning the file metadata results
     Return $customobj
-} 
+}
 ###############################################################################
 ### Function to copy or move photos / videos, the two supported parameters are copy and move
 ###############################################################################
@@ -170,7 +170,7 @@ Function Photos_Videos ($Mode) {
     $SourceDir = Folder_Dialog -Message "Select the SOURCE directory"
     ### Calling the folder_dialog function for the destination directory
     Write-Host "Select the DESTINATION directory in the folder dialog window" -ForegroundColor Yellow
-    $DestinationDir = Folder_Dialog -Message "Select the DESTINATION directory"
+    $DestinationDir = "D:\Photos" #Folder_Dialog -Message "Select the DESTINATION directory"
     ### if the mode given was move then an additional folder dialog will be executed for the duplicates directory
     if ($Mode -eq "move") {
         ### if the user selects the same directory for both the source and destination the script will exit as this will cause issues
@@ -261,7 +261,7 @@ Function Photos_Videos ($Mode) {
                     #########################################################################################
                     if ($OriginalHash -ne $NewFileHash) {
                         ### if the two file hashes don't match then the script will keep both files
-                        ### Putting together the new file name and path to include the first 4 characters of the hash to ensure the file name is unique         
+                        ### Putting together the new file name and path to include the first 4 characters of the hash to ensure the file name is unique
                         $NewHashPath = $_.Destination_Path + "\" + $_.Destination_Filename + "~" + ($NewFileHash.subString(0, [System.Math]::Min(4, $NewFileHash.Length))) + $_.Extension
                         #########################################################################################
                         if ($Mode -eq "copy") {
@@ -272,7 +272,7 @@ Function Photos_Videos ($Mode) {
                                 $Skipped_Count++ ### Counter for skipped files
                                 ### Updating custom PS object to hold final results
                                 $Final_Results += [PSCustomObject] @{
-                                    Source      = $_.Source_Path 
+                                    Source      = $_.Source_Path
                                     Destination = $NewHashPath
                                     Results     = "Skipped, already copied"
                                 }
@@ -285,7 +285,7 @@ Function Photos_Videos ($Mode) {
                                     $Copied_Hash_Count++ ### Counter for copied files (same name different hash)
                                     ### Updating custom PS object to hold final results
                                     $Final_Results += [PSCustomObject] @{
-                                        Source      = $_.Source_Path 
+                                        Source      = $_.Source_Path
                                         Destination = $NewHashPath
                                         Results     = "Copied (hash added)"
                                     }
@@ -297,7 +297,7 @@ Function Photos_Videos ($Mode) {
                                     $Error_Count++ ### Counter for errors handled
                                     ### Updating custom PS object to hold final results
                                     $Final_Results += [PSCustomObject] @{
-                                        Source      = $_.Source_Path 
+                                        Source      = $_.Source_Path
                                         Destination = $NewHashPath
                                         Results     = "ERROR, $errormessage"
                                     }
@@ -315,7 +315,7 @@ Function Photos_Videos ($Mode) {
                                     $Duplicate_Count++ ### Counter for duplicate files
                                     ### Updating custom PS object to hold final results
                                     $Final_Results += [PSCustomObject] @{
-                                        Source      = $_.Source_Path 
+                                        Source      = $_.Source_Path
                                         Destination = $DuplicateDir
                                         Results     = "Moved to duplicates directory"
                                     }
@@ -327,7 +327,7 @@ Function Photos_Videos ($Mode) {
                                     $Error_Count++ ### Counter for errors handled
                                     ### Updating custom PS object to hold final results
                                     $Final_Results += [PSCustomObject] @{
-                                        Source      = $_.Source_Path 
+                                        Source      = $_.Source_Path
                                         Destination = $DuplicateDir
                                         Results     = "ERROR, $errormessage"
                                     }
@@ -340,7 +340,7 @@ Function Photos_Videos ($Mode) {
                                     Move-Item -Path $_.Source_Path -Destination $NewHashPath -Force -ErrorAction Stop
                                     $Moved_Hash_Count++ ### Counter for moved files
                                     $Final_Results += [PSCustomObject] @{
-                                        Source      = $_.Source_Path 
+                                        Source      = $_.Source_Path
                                         Destination = $NewHashPath
                                         Results     = "Moved (hash added)"
                                     }
@@ -352,7 +352,7 @@ Function Photos_Videos ($Mode) {
                                     $Error_Count++ ### Counter for errors handled
                                     ### Updating custom PS object to hold final results
                                     $Final_Results += [PSCustomObject] @{
-                                        Source      = $_.Source_Path 
+                                        Source      = $_.Source_Path
                                         Destination = $NewHashPath
                                         Results     = "ERROR, $errormessage"
                                     }
@@ -361,7 +361,7 @@ Function Photos_Videos ($Mode) {
                         }
                         #########################################################################################
                     }
-                    ######################################################################################### 
+                    #########################################################################################
                     else {
                         ### if the two file hashes DO match then the script will skip the file or move it to the duplicates directory
                         if ($Mode -eq "copy") {
@@ -370,7 +370,7 @@ Function Photos_Videos ($Mode) {
                             $Skipped_Count++ ### Counter for skipped files
                             ### Updating custom PS object to hold final results
                             $Final_Results += [PSCustomObject] @{
-                                Source      = $_.Source_Path 
+                                Source      = $_.Source_Path
                                 Destination = $Destination_File
                                 Results     = "Skipped, already copied"
                             }
@@ -383,7 +383,7 @@ Function Photos_Videos ($Mode) {
                                 $Duplicate_Count++ ### Counter for duplicate files
                                 ### Updating custom PS object to hold final results
                                 $Final_Results += [PSCustomObject] @{
-                                    Source      = $_.Source_Path 
+                                    Source      = $_.Source_Path
                                     Destination = $DuplicateDir
                                     Results     = "Moved to duplicates directory"
                                 }
@@ -395,7 +395,7 @@ Function Photos_Videos ($Mode) {
                                 $Error_Count++ ### Counter for errors handled
                                 ### Updating custom PS object to hold final results
                                 $Final_Results += [PSCustomObject] @{
-                                    Source      = $_.Source_Path 
+                                    Source      = $_.Source_Path
                                     Destination = $DuplicateDir
                                     Results     = "ERROR, $errormessage"
                                 }
@@ -416,7 +416,7 @@ Function Photos_Videos ($Mode) {
                         $Copied_Count++ ### Counter for copied files
                         ### Updating custom PS object to hold final results
                         $Final_Results += [PSCustomObject] @{
-                            Source      = $_.Source_Path 
+                            Source      = $_.Source_Path
                             Destination = $Destination_File
                             Results     = "Copied"
                         }
@@ -428,7 +428,7 @@ Function Photos_Videos ($Mode) {
                         $Error_Count++ ### Counter for errors handled
                         ### Updating custom PS object to hold final results
                         $Final_Results += [PSCustomObject] @{
-                            Source      = $_.Source_Path 
+                            Source      = $_.Source_Path
                             Destination = $Destination_File
                             Results     = "ERROR, $errormessage"
                         }
@@ -441,7 +441,7 @@ Function Photos_Videos ($Mode) {
                         Move-Item -Path $_.Source_Path -Destination $Destination_File -Force
                         $Moved_Count++ ### Counter for moved files
                         $Final_Results += [PSCustomObject] @{
-                            Source      = $_.Source_Path 
+                            Source      = $_.Source_Path
                             Destination = $Destination_File
                             Results     = "Moved"
                         }
@@ -453,7 +453,7 @@ Function Photos_Videos ($Mode) {
                         $Error_Count++ ### Counter for errors handled
                         ### Updating custom PS object to hold final results
                         $Final_Results += [PSCustomObject] @{
-                            Source      = $_.Source_Path 
+                            Source      = $_.Source_Path
                             Destination = $Destination_File
                             Results     = "ERROR, $errormessage"
                         }
@@ -461,7 +461,7 @@ Function Photos_Videos ($Mode) {
                 }
             }
             #########################################################################################
-            ### Clearing variables to keep the script clean  
+            ### Clearing variables to keep the script clean
             Clear-Variable OriginalHash, NewFileHash, NewHashPath, Destination_File -ErrorAction SilentlyContinue
         }
         ### Sending the results to the terminal and transcript
@@ -497,7 +497,7 @@ Function Remove_Extension {
     Write-host "Directory to remove unwanted files: $Bad_Exts_Dir" -ForegroundColor Cyan
     Write-host "Number of files to remove: $Count_to_remove"  -ForegroundColor Cyan
     Write-host "Files to be removed with extension: $Bad_Extensions" -ForegroundColor Cyan
-    
+
     $Confirm = Read-Host "Do you want to continue? (Y/N)"
     #########################################################################################
     if ($Confirm.ToUpper() -eq "Y") {
@@ -532,7 +532,7 @@ Function Delete_Empty_Dirs {
     Write-Host "`nConfirm that the following variables are correct" -ForegroundColor DarkYellow
     Write-host "Directory to remove unwanted files: $Empty_Dir" -ForegroundColor Cyan
     Write-host "Number of folders to remove: $Count_to_delete"  -ForegroundColor Cyan
-        
+
     $Confirm = Read-Host "Do you want to continue? (Y/N)"
     #########################################################################################
     if ($Confirm.ToUpper() -eq "Y") {
@@ -603,8 +603,8 @@ Function Duplicate_File_Finder {
         $i++ ### incrementing the progress bar by 1 each loop through
         Write-Progress -Activity "Gathering hash values" -Status ("Checking : {0}" -f $_.FullName) -PercentComplete ($i / $Files_Same_Size.count * 100) -Id 0 ### Progress bar
         Get-FileHash -Algorithm SHA1 $_.fullname ### Getting the SHA1 file hash
-    } 
-    
+    }
+
     $Groups_of_dupes = $File_Hashes | Group-Object -Property Hash | Where-Object { $_.count -gt 1 } ### Finding any file hashes that exist more than once, which would indicate a duplicate file
     Write-Host $Groups_of_dupes.Length "Groups of duplicate files found" -ForegroundColor Yellow
     #########################################################################################
@@ -616,7 +616,7 @@ Function Duplicate_File_Finder {
     Write-Host "Q: Enter Q to quit. `n"
     #########################################################################################
     $selection = (Read-Host "Please make a selection").ToUpper()
-    
+
     switch ($selection) {
         #########################################################################################
         '1' {
@@ -631,7 +631,7 @@ Function Duplicate_File_Finder {
             Write-Host $Selected_Files_to_Move.Length "Duplicate files to be moved" -ForegroundColor Cyan
             Write-Host "In the folder dialog window select the directory you want to move duplicates to" -ForegroundColor Yellow
             $DuplicateDir = Folder_Dialog -Message "Select the duplicate files directory"
-            
+
             foreach ($Object in $Selected_Files_to_Move) {
                 Move-Item -Path $Object.Path -Destination $DuplicateDir -Force -Verbose ### Moving selected file to duplicate files directory
             }
@@ -644,7 +644,7 @@ Function Duplicate_File_Finder {
             Write-Host $Selected_Files_to_Move.Length "Duplicate files to be moved" -ForegroundColor Cyan
             Write-Host "In the folder dialog window select the directory you want to move duplicates to" -ForegroundColor Yellow
             $DuplicateDir = Folder_Dialog -Message "Select the duplicate files directory"
-        
+
             foreach ($Object in $Selected_Files_to_Move) {
                 Move-Item -Path $Object.Path -Destination $DuplicateDir -Force -Verbose ### Moving selected file to duplicate files directory
             }
@@ -661,7 +661,7 @@ Function Duplicate_File_Finder {
             Write-Host $Selected_Files_to_Move.Length "Duplicate files to be moved" -ForegroundColor Cyan
             Write-Host "In the folder dialog window select the directory you want to move duplicates to" -ForegroundColor Yellow
             $DuplicateDir = Folder_Dialog -Message "Select the duplicate files directory"
-            
+
             foreach ($Object in $Selected_Files_to_Move) {
                 Move-Item -Path $Object.Path -Destination $DuplicateDir -Force -Verbose ### Moving selected file to duplicate files directory
             }
@@ -694,11 +694,11 @@ Function Cleanup {
     Write-Host "4: Enter 4 to find duplicate files in a given directory"
     Write-Host "5: Enter 5 to view files in a directory"
     Write-Host "Q: Enter Q to quit. `n"
-    
+
     $selection = (Read-Host "Please make a selection").ToUpper()
-    
+
     switch ($selection) {
-        '1' { Remove_Extension }  
+        '1' { Remove_Extension }
         '2' { Delete_Empty_Dirs }
         '3' { OutGrid_Delete }
         '4' { Duplicate_File_Finder }
